@@ -1,0 +1,629 @@
+<!--home.ejs-->
+<!DOCTYPE html>
+<html lang="en">
+    <html>
+        <head>
+            <title>
+                <%= title %>
+            </title>
+            <meta charset="utf-8">
+                <meta content="width=device-width, initial-scale=1" name="viewport">
+                    <link href="/<%=appname%>/img/mrqrlogo.png" rel="shortcut icon" type="image/x-icon">
+                        <script src="/<%=appname%>/script/jquery/jquery-ui-1.12.1.custom/external/jquery/jquery.js">
+                        </script>
+                        <script src="/<%=appname%>/script/jquery/jquery-ui-1.12.1.custom/jquery-ui.js">
+                        </script>
+                        <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+                            <script src="/<%=appname%>/script/js/jquery.cookie.js">
+                            </script>
+                            <script src="/<%=appname%>/script/js/url.min.js">
+                            </script>
+                            <script src="/<%=appname%>/script/js/jquery.auto-complete.min.js">
+                            </script>
+                            <link href="/<%=appname%>/style/style.css" rel="stylesheet"/>
+                            <link href="/<%=appname%>/style/autocomplet.css" rel="stylesheet"/>
+                            <style>
+                                @font-face {
+					font-family: THSarabunNew;
+					font-weight: normal;
+					font-style: normal;
+					src: url("/<%=appname%>/font/THSarabunNew.ttf");
+			}
+			input[type="text"], input[type="number"], input[type="button"], input[type="checkbox"], input[type="range"], #tabs-1, #tabs-2, #tabs-3{font-family: THSarabunNew;}
+			.ui-tabs-vertical { width: 55em; }
+			.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+			.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+			.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+			.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
+			.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
+			#title-form{text-align: center; border-radius: 25px; background: #73AD21;}
+			#CreteQRForm{padding: 10px;}
+			#QRCodePicture{padding: 10px;}
+                            </style>
+                        </link>
+                    </link>
+                </meta>
+            </meta>
+        </head>
+        <body>
+            <h2 id="welcome-user" style="text-align: center">
+                <%= title %>
+            </h2>
+            <div id="tabs">
+                <ul>
+                    <li>
+                        <a href="#tabs-1">
+                            แสกนคิวอาร์โค้ด
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tabs-2">
+                            คิวอาร์โค้ดทั่วไป
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tabs-3">
+                            คิวอาร์โค้ด-พร้อมเพย์
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tabs-4">
+                            API
+                        </a>
+                    </li>
+                    <li>
+                        <img src="/<%=appname%>/img/mrqrlogo.png" width="300"/>
+                    </li>
+                </ul>
+                <div id="tabs-1">
+                    <h2 id="title-form">
+                        สแกนคิวอาร์โค้ด
+                    </h2>
+                    <div style="text-align: center">
+                        <img alt="ภาพคิวอาร์โค้ดจากกล้องหรือจากไฟล์ที่อัพโหลด" height="240" id="scanned-img" src="" width="320"/>
+                    </div>
+                    <p id="scanned-QR" style="text-align: center; font-size: 18px; font-weight: bold; text-shadow: 1px 1px #949494;">
+                        คลิกปุ่ม
+                        <b>
+                            Play
+                        </b>
+                        เพื่อเปิดสัญญาณภาพจากกล้อง
+                    </p>
+                    <hr/>
+                    <div style="text-align: center">
+                        <div class="well" style="position: relative;display: inline-block;">
+                            <canvas height="240" id="webcodecam-canvas" width="320">
+                            </canvas>
+                            <div class="scanner-laser laser-rightBottom" style="opacity: 0.5;">
+                            </div>
+                            <div class="scanner-laser laser-rightTop" style="opacity: 0.5;">
+                            </div>
+                            <div class="scanner-laser laser-leftBottom" style="opacity: 0.5;">
+                            </div>
+                            <div class="scanner-laser laser-leftTop" style="opacity: 0.5;">
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div id="video-control-panel" style="border: #000; border-width: 3px;">
+                        <b>
+                            กล้อง :
+                        </b>
+                        <select class="form-control" id="camera-select" style="display: inline-block;width: auto;">
+                        </select>
+                        <input id="play-cmd" type="button" value=" Play "/>
+                        <input class="disabled" id="grab-cmd" type="button" value=" Image Shot "/>
+                        <input id="stop-cmd" type="button" value=" Stop "/>
+                        <input id="decode-img" type="button" value="Upload Barcode Picture"/>
+                        <input id="image-url" placeholder="Image url" readonly="true" type="text"/>
+                        <br/>
+                        <b>
+                            Zoom :
+                        </b>
+                        <input id="zoom" max="30" min="10" onchange="changeZoom();" type="range"/>
+                        <br/>
+                        <b>
+                            Brightness :
+                        </b>
+                        <input id="brightness" max="128" min="0" onchange="changeBrightness();" type="range" value="0"/>
+                        <br/>
+                        <b>
+                            Sharpness :
+                        </b>
+                        <input id="sharpness" onchange="changeSharpness();" type="checkbox"/>
+                        <br/>
+                        <b>
+                            Grayscale :
+                        </b>
+                        <input id="grayscale" onchange="changeGrayscale();" type="checkbox"/>
+                    </div>
+                    <br/>
+                    <br/>
+                    <hr/>
+                    <div id="userhelp" style="border: solid #00ff00 4px; margin-left: 10px; margin-top: 10px; padding-left: 10px; font-family: THSarabunNew; height:100%;">
+                        <p style="text-align: center; font-size: 28px; font-weight: bold; text-shadow: 1px 1px #949494;">
+                            วิธีสแกน
+                        </p>
+                        <p>
+                            หากมีกล้องมากกว่าหนึ่งกล้อง สามารถคลิกเลือกกล้องได้จากช่องเลื่อก
+                            <b>
+                                กล้อง
+                            </b>
+                            <br/>
+                            คลิกปุ่ม
+                            <b>
+                                Play
+                            </b>
+                            เพื่อเปิดสัญญาณภาพจากกล้อง
+                            <br/>
+                            คลิกปุ่ม
+                            <b>
+                                Image Shot
+                            </b>
+                            เพื่อจับภาพจากกล้อง
+                            <br/>
+                            คลิกปุ่ม
+                            <b>
+                                Stop
+                            </b>
+                            เพื่อปิดสัญญาณภาพของกล้อง
+                            <br/>
+                            คลิกปุ่ม
+                            <b>
+                                Upload Barcode Picture
+                            </b>
+                            เพื่ออัพโหลดรูปคิวอาร์โค้ดในเครื่องขึ้นไปสแกน
+                            <br/>
+                            ปรับระยะ Zoom เข้า-ออก จากไสไลด์บาร์
+                            <br/>
+                            ปรับความมืด-สว่าง จากไสไลด์บาร์
+                            <br/>
+                            เลือกความคมของภาพ จากเช็คบ็อก
+                            <br/>
+                            เลือกเป็นภาพสีหรือขาว-ดำ จากเช็คบ็อก
+                            <br/>
+                            หากเสียง บีป ไม่ดัง ให้คลิกปุ่ม
+                            <b>
+                                ทดสอบเสียง
+                            </b>
+                            <br/>
+                        </p>
+                    </div>
+                    <div>
+                    </div>
+                    <div style="text-align: center">
+                        <input id="soundtest-cmd" type="button" value="ทดสอบเสียง"/>
+                    </div>
+                    <div id="sound-control-panel">
+                        <audio id="audiotag1" preload="auto" src="https://www.myshopman.com/shop/resource/js/barcode/audio/beep.mp3">
+                        </audio>
+                    </div>
+                </div>
+                <div id="tabs-2">
+                    <div id="CreteAnotherQRForm">
+                        <h2 id="title-form">
+                            ฟอร์มสร้างคิวอาร์โค้ดทั่วไป
+                        </h2>
+                        <div id="qrDataBlock" style="text-align: left;">
+                            <div class="InputLabel">
+                                ข้อมูลที่จะใส่ในคิวอาร์โค้ด
+                            </div>
+                            <div class="Input">
+                                <textarea cols="40" id="qrData" rows="10">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div>
+                        </div>
+                        <div class="SubmitCommandBlock">
+                            <div class="SubmitCommand" style="text-align: center;">
+                                <button onclick="doCreateAnotherQRCode()">
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tabs-3">
+                    <div id="CretePromptpayQRForm">
+                        <h2 id="title-form">
+                            ฟอร์มสร้างคิวอาร์โค้ดพร้อมเพย์
+                        </h2>
+                        <div id="qrTypeBlock" style="text-align: left;">
+                            <div class="InputLabel">
+                                ประเภทพร้อมเพย์
+                            </div>
+                            <div class="Input">
+                                <select id="qrType">
+                                    <option value="01">
+                                        หมายเลขโทรศัพท์
+                                    </option>
+                                    <option value="02">
+                                        หมายเลขประจำตัวประชาชน
+                                    </option>
+                                    <option selected="" value="03">
+                                        หมายเลข e-Wallet
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="promptpayNoBlock" style="text-align: left;">
+                            <div class="InputLabel">
+                                หมายเลขพร้อมเพย์
+                            </div>
+                            <div class="Input">
+                                <input id="promptpayNo" type="number" value="140000835077746">
+                                </input>
+                            </div>
+                        </div>
+                        <div id="promptpayNameBlock" style="text-align: left;">
+                            <div class="InputLabel">
+                                ชื่อพร้อมเพย์
+                            </div>
+                            <div class="Input">
+                                <input id="promptpayName" type="text" value="นายประเสริฐ สุดชดา">
+                                </input>
+                            </div>
+                        </div>
+                        <div id="payAmountBlock" style="text-align: left;">
+                            <div class="InputLabel">
+                                จำนวนเงิน
+                            </div>
+                            <div class="Input">
+                                <input id="payAmount" placeholder="100" type="number">
+                                    บาท
+                                </input>
+                            </div>
+                        </div>
+                        <div>
+                        </div>
+                        <div class="SubmitCommandBlock">
+                            <div class="SubmitCommand" style="text-align: center;">
+                                <button onclick="doCreatePromptpayQRCode()">
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+                    </div>             
+                </div>
+                <div id="tabs-4">
+                    <div id="CreteAnotherQRForm">
+                        <h2 id="title-form">
+                            API
+                        </h2>
+                        <div id="qrDataBlock" style="text-align: left;">
+                            Comming Soon.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </html>
+</html>
+<div id="QRCodePicture">
+</div>
+<script>
+    $( function() {
+	    $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+	    $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+		$('select').css({'font-family': 'THSarabunNew'});
+		$('button').css({'font-family': 'THSarabunNew'});
+		$('textarea').css({'font-family': 'THSarabunNew'});
+        $('textarea').val('');
+        $('#userhelp').accordion({collapsible: true, active: false});
+	});
+
+	function getPromptpayQRCode(params){
+		return new Promise(function(resolve, reject) {
+			var url = "/api/line/home/getpromptpayqrcode";
+			$.post(url, params, function(data){
+				resolve(data);
+			}).fail(function(error) { 
+				console.log(JSON.stringify(error));
+				reject(error); 
+			});
+		});
+	}
+
+	function getOtherQRCode(params){
+		return new Promise(function(resolve, reject) {
+			var url = "/api/line/home/getotherqrcode";
+			$.post(url, params, function(data){
+				resolve(data);
+			}).fail(function(error) { 
+				console.log(JSON.stringify(error));
+				reject(error); 
+			});
+		});
+	}
+
+	function doCreatePromptpayQRCode(){
+		let promptpayNo = $('#promptpayNo').val();
+		let promptpayName = $('#promptpayName').val();
+		let payAmount = $('#payAmount').val();	
+		if (promptpayNo !== '') {
+			if (promptpayName !== '') {
+				if (payAmount !== '') {
+					let qrType = $('#qrType').val();
+                    let userId = '';
+					let params = {qrType: qrType, promptpayNo: promptpayNo, promptpayName: promptpayName, payAmount: payAmount, userId: userId};
+					getPromptpayQRCode(params).then((link) => {
+						$("#QRCodePicture").empty();
+						$("#QRCodePicture").append("<img src='" + link + "'/>");
+					});
+				} else {
+					alert('จำนวนเงิน not allow empty.');
+					$('#payAmount').focus();	
+				}
+			} else {
+				alert('ชื่อพร้อมเพย์ not allow empty.');
+				$('#promptpayName').focus();
+			}
+		} else {
+			alert('หมายเลขพร้อมเพย์ not allow empty.');
+			$('#promptpayNo').focus();
+		}
+	}
+	
+	function doCreateAnotherQRCode() {
+		let qrData = $('#qrData').val();
+		if (qrData !== '') {
+			let qrType = '99';
+			let promptpayName = '';
+			let payAmount = 0;
+            let userId = '';
+			let params = {qrType: qrType, promptpayNo: qrData, promptpayName: promptpayName, payAmount: payAmount, userId: userId};
+			getOtherQRCode(params).then((link) => {
+				$("#QRCodePicture").empty();
+				$("#QRCodePicture").append("<img src='" + link + "'/>");
+			});
+		} else {
+			alert('ข้อมูลที่จะใส่ในคิวอาร์โค้ด not allow empty.');
+			$('#qrData').focus();
+		}
+	}
+</script>
+<script src="https://www.myshopman.com/shop/resource/js/barcode/js/qrcodelib.js" type="text/javascript">
+</script>
+<script src="https://www.myshopman.com/shop/resource/js/barcode/js/webcodecamjquery.js" type="text/javascript">
+</script>
+<script src="https://www.myshopman.com/shop/resource/js/barcode/js/filereader.js" type="text/javascript">
+</script>
+<style type="text/css">
+    .scanner-laser{
+        position: absolute;
+        margin: 20px;
+        height: 30px;
+        width: 30px;
+    }
+    .laser-leftTop{
+        top: 0;
+        left: 0;
+        border-top: solid red 5px;
+        border-left: solid red 5px;
+    }
+    .laser-leftBottom{
+        bottom: 0;
+        left: 0;
+        border-bottom: solid red 5px;
+        border-left: solid red 5px;
+    }
+    .laser-rightTop{
+        top: 0;
+        right: 0;
+        border-top: solid red 5px;
+        border-right: solid red 5px;
+    }
+    .laser-rightBottom{
+        bottom: 0;
+        right: 0;
+        border-bottom: solid red 5px;
+        border-right: solid red 5px;
+    }
+    .scanbarcode {
+        width: 100%;
+        text-align: center;
+    }
+</style>
+<script>
+    var scannerLaser = $(".scanner-laser");
+	var scannedImg = $("#scanned-img");
+	var scannedQR = $("#scanned-QR");
+	var imageUrl = $("#image-url");
+	var grabImg = $("#grab-img");
+	var zoom = $("#zoom");
+	var contrast = $("#contrast");
+	var brightness = $("#brightness");
+	var sharpness = $("#sharpness");
+	var grayscale = $("#grayscale");
+
+    //$(scannedImg).hide();
+
+	var args = {
+	    autoBrightnessValue: 100,
+	    resultFunction: function(res) {
+	        [].forEach.call(scannerLaser, function(el) {
+	            $(el).fadeOut(300, function() {
+	                $(el).fadeIn(300);
+	            });
+	        });
+	        mybeep();
+            //$(scannedImg).show();
+	        $(scannedImg).attr("src", res.imgData);
+	        $(scannedQR).text(res.format + ": " + res.code);
+	        
+	        //if (confirm('รหัสบาร์โค้ดที่อ่านได้คือ\n' + res.code + '\nคุณต้องการอัพเดทรหัสบาร์โค้ดด้วยค่านี้หรือไม่?') === true) {
+	            //updatebardode(res.code);
+	            //alert(res.code);
+	        //}
+	        
+	    },
+	    getDevicesError: function(error) {
+	        var p, message = "Error detected with the following parameters:\n";
+	        for (p in error) {
+	            message += (p + ": " + error[p] + "\n");
+	        }
+	        console.log(message);
+	    },
+	    getUserMediaError: function(error) {
+	        var p, message = "Error detected with the following parameters:\n";
+	        for (p in error) {
+	            message += (p + ": " + error[p] + "\n");
+	        }
+	        console.log(message);
+	    },
+	    cameraError: function(error) {
+	        var p, message = "Error detected with the following parameters:\n";
+	        if (error.name === "NotSupportedError") {
+	            var ans = confirm("Your browser does not support getUserMedia via HTTP!\n(see: https://goo.gl/Y0ZkNV).\n You want to see github demo page in a new window?");
+	            if (ans) {
+	                window.open("https://www.myshopman.com/mshop/resource/barcode/simplejquery.jsp");
+	            }
+	        } else {
+	            for (p in error) {
+	                message += p + ": " + error[p] + "\n";
+	            }
+	            console.log(message);
+	        }
+	    },
+	    cameraSuccess: function() {
+	        grabImg.removeClass("disabled");
+	    }
+	};
+
+	function fadeOut(el, v) {
+	    el.style.opacity = 1;
+	    (function fade() {
+	        if ((el.style.opacity -= 0.1) < v) {
+	            el.style.display = "none";
+	            el.classList.add("is-hidden");
+	        } else {
+	            requestAnimationFrame(fade);
+	        }
+	    })();
+	}
+
+	function fadeIn(el, v, display) {
+	    if (el.classList.contains("is-hidden")) {
+	        el.classList.remove("is-hidden");
+	    }
+	    el.style.opacity = 0;
+	    el.style.display = display || "block";
+	    (function fade() {
+	        var val = parseFloat(el.style.opacity);
+	        if (!((val += 0.1) > v)) {
+	            el.style.opacity = val;
+	            requestAnimationFrame(fade);
+	        }
+	    })();
+	}
+
+	changeZoom = function(a) {
+	    if (decoder.isInitialized()) {
+	        var value = typeof a !== "undefined" ? parseFloat(a.toPrecision(2)) : zoom.val() / 10;
+	        decoder.options.zoom = value;
+	    }
+	};
+
+	changeContrast = function() {
+	    if (decoder.isInitialized()) {
+	        var value = contrast.val();
+	        decoder.options.contrast = parseFloat(value);
+	    }
+	};
+
+	changeBrightness = function() {
+	    if (decoder.isInitialized()) {
+	        var value = brightness.val();
+	        decoder.options.brightness = parseFloat(value);
+	    }
+	};
+
+	changeSharpness = function() {
+	    if (decoder.isInitialized()) {
+	        var value = sharpness.prop("checked");
+	        if (value) {
+	            decoder.options.sharpness = [0, -1, 0, -1, 5, -1, 0, -1, 0];
+	        } else {
+	            decoder.options.sharpness = [];
+	        }
+	    }
+	};
+
+	changeGrayscale = function() {
+	    if (decoder.isInitialized()) {
+	        var value = grayscale.prop("checked");
+	        if (value) {
+	            decoder.options.grayScale = true;
+	        } else {
+	            decoder.options.grayScale = false;
+	        }
+	    }
+	};
+
+	var decoder = $("#webcodecam-canvas").WebCodeCamJQuery(args).data().plugin_WebCodeCamJQuery;
+
+
+	decoder.init();
+
+	var cameraSelect = $("#camera-select");
+	decoder.buildSelectMenu(cameraSelect, 'user|front').init(args);
+
+	$(document).on("click", "#play-cmd", function() {
+	    scannedQR.text("Scanning ...");
+	    grabImg.removeClass("disabled");
+	    decoder.play();
+	});
+
+	$(document).on("click", "#grab-cmd", function() {
+	    scannedImg.attr("src", decoder.getLastImageSrc());
+	});
+
+	$(document).on("click", "#stop-cmd", function() {
+	    grabImg.addClass("disabled");
+	    scannedQR.text("Stopped");
+	    decoder.stop();
+	});
+
+	$(document).on("click", "#decode-img", function() {
+	    if (decoder.isInitialized()) {
+	        decoder.decodeLocalImage(imageUrl.val());
+	    }
+	    imageUrl.val(null);
+	});
+
+	$("#camera-select").on("change", function() {
+	    if (decoder.isInitialized()) {
+	        decoder.stop();
+	        //decoder.play();
+	    }
+	});
+
+	$(document).on("click", "#soundtest-cmd", function() {
+	    mybeep();
+	});
+
+	function mybeep() {
+	    $('#audiotag1')[0].play();
+	}
+
+	$(document).on("click", "#back-cmd", function() {
+	    back2productmng();
+	});
+
+	$(document).on("click", "#open-helpuser-cmd", function() {
+	    $("#userhelp").popup('open');
+	});
+
+	$(document).on("click", "#close-helpuser-cmd", function() {
+	    $("#userhelp").popup('close');
+	});
+	$(function() {
+		/*
+	    $("#userhelp").accordion({
+	        collapsible: true,
+	        active: false
+	    });
+	    */
+	});
+</script>

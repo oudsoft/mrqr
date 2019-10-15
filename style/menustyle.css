@@ -1,0 +1,109 @@
+
+*{
+  box-sizing: border-box;
+}
+
+.text{
+  width: 100%;
+  text-align: center;
+  margin-top: 10%;
+  font-size: 3em;
+  color: #000000;
+  font-weight: 800;
+}
+
+.menu-tab {
+  width: 90px;
+  height: 70px;
+  position: fixed;
+  z-index: 100;
+  top: 0px;
+  left: 0px;
+  cursor: pointer;
+  transition: all .6s ease-in-out;
+}
+.menu-tab div {
+  width: 33px;
+  height: 4px;
+  background-color: #2d2d2d;
+  display: block;
+  margin: 5px 28px;
+  transition: all .6s ease-in-out;
+}
+.menu-tab div:nth-child(1) {
+  margin-top: 20px;
+}
+
+.menu-tab.active {
+  left: 300px;
+  transition: all .6s ease-in-out;
+  background-color: rgba(0, 255, 0, 0.4);
+}
+.menu-tab.active:hover {
+  background-color: #3cb344;
+  transition: all .5s ease;
+}
+.menu-tab.active #one {
+  -webkit-transform: translateY(9px) rotate(-135deg);
+  transform: translateY(9px) rotate(-135deg);
+  transition: all .6s ease-in-out;
+  background-color: #f1f1f1;
+}
+.menu-tab.active #one:hover {
+  background-color: #e74c3c;
+  transition: all .5s ease;
+}
+
+.menu-tab.active #two {
+  opacity: 0;
+  transition: .4s ease;
+}
+.menu-tab.active #three {
+  -webkit-transform: translateY(-9px) rotate(-45deg);
+  transform: translateY(-9px) rotate(-45deg);
+  transition: all .6s ease-in-out;
+  background-color: #f1f1f1;
+}
+.menu-tab.active #three:hover {
+  background-color: #e74c3c;
+  transition: all .5s ease;
+}
+
+.menu-hide {
+  width: 300px;
+  left: -300px;
+  height: 100vh;
+  position: fixed;
+  z-index: 10;
+  top: 0px;
+  transition: all .6s ease-in-out;
+  overflow-y: scroll;
+}
+.menu-hide nav {
+  /*end of ul*/
+}
+.menu-hide nav ul {
+  /*end of li*/
+}
+.menu-hide nav ul li {
+  height: 65px;
+  list-style-type: none;
+  text-align: center;
+  line-height: 65px;
+  transition: all .5s ease;
+}
+.menu-hide nav ul li:hover {
+  background-color: #3cb344;
+  transition: all .5s ease;
+}
+.menu-hide nav ul li a {
+  padding: 30px 25px;
+  text-decoration: none;
+  color: #000000;
+  font-weight: 800;
+}
+.menu-hide.show {
+  left: 0px;
+  background-color: rgba(0, 255, 0, 0.4);
+  transition: all .6s ease-in-out;
+}

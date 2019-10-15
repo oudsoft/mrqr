@@ -1,0 +1,12 @@
+/*tabsheet*/
+.w3-row:after,.w3-row:before,.w3-row-padding:after,.w3-row-padding:before {content:"";display:table;clear:both}
+
+.w3-third {float:left;width:100%}
+@media (min-width:601px){.w3-third{width:33.33333%}}
+.w3-bottombar {border-bottom:6px solid #ccc!important}
+.w3-hover-light-grey {color:#000!important;background-color:#f1f1f1!important}
+.w3-padding {padding:8px 16px!important}
+
+.w3-container {padding:0.01em 16px}.w3-panel{margin-top:16px;margin-bottom:16px}
+.w3-border-red,.w3-hover-border-red:hover{border-color:#f44336!important}
+
